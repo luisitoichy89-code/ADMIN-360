@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.admin360.core.session.SessionManager
 import com.admin360.ui.screens.*
+import com.admin360.ui.screens.admin.AdminPanelScreen
 
 @Composable
 fun AppNavHost(
@@ -21,20 +22,19 @@ fun AppNavHost(
     ) {
 
         // 🔐 LOGIN
-        composable(AppRoutes.LOGIN) {
+        composable("login") {
             LoginScreen(
-                onLoginSuccess = {
-                    navController.navigate(AppRoutes.DASHBOARD) {
-                        popUpTo(AppRoutes.LOGIN) { inclusive = true }
+                onSuccess = {
+                    navController.navigate("dashboard") {
+                        popUpTo("login") { inclusive = true }
                     }
                 }
             )
         }
 
-        // 📊 DASHBOARD SUPER ADMIN
-        composable(AppRoutes.DASHBOARD) {
+        // 📊 DASHBOARD
+        composable("dashboard") {
             DashboardScreen(
-                session = session,
                 onNavigate = { route ->
                     navController.navigate(route)
                 }
@@ -42,45 +42,45 @@ fun AppNavHost(
         }
 
         // 🏢 NEGOCIOS
-        composable(AppRoutes.NEGOCIOS) {
+        composable("negocios") {
             NegociosScreen(
                 onBack = { navController.popBackStack() }
             )
         }
 
         // 🏬 LOCALES
-        composable(AppRoutes.LOCALES) {
+        composable("locales") {
             LocalesScreen(
                 onBack = { navController.popBackStack() }
             )
         }
 
         // 👤 USUARIOS
-        composable(AppRoutes.USUARIOS) {
+        composable("usuarios") {
             UsuariosScreen(
                 onBack = { navController.popBackStack() }
             )
         }
 
         // 🔑 LICENCIAS
-        composable(AppRoutes.LICENCIAS) {
+        composable("licencias") {
             LicenciasScreen(
                 onBack = { navController.popBackStack() }
             )
         }
 
-        // ⚙️ CONFIGURACIÓN
-        composable(AppRoutes.CONFIGURACION) {
-            ConfiguracionScreen(
-                onBack = { navController.popBackStack() }
+        // ⚙️ ADMIN PANEL
+        composable("admin_panel") {
+            AdminPanelScreen(
+                onNavigate = { route ->
+                    navController.navigate(route)
+                }
             )
         }
 
-        // 📄 LOGS
-        composable(AppRoutes.LOGS) {
-            LogsScreen(
-                onBack = { navController.popBackStack() }
-            )
+        // 🚫 BLOQUEADO
+        composable("blocked") {
+            BlockedScreen()
         }
     }
 }

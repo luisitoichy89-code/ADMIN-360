@@ -1,27 +1,48 @@
 package com.admin360.feature.dashboard.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.admin360.core.base.BaseViewModel
 import com.admin360.feature.dashboard.data.DashboardRepository
+import com.admin360.feature.dashboard.model.DashboardState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.mutableStateOf
 
 class DashboardViewModel(
     private val repo: DashboardRepository
-) : ViewModel() {
+) : BaseViewModel() {
 
-    var negocios = mutableStateOf(0)
-    var locales = mutableStateOf(0)
-    var usuarios = mutableStateOf(0)
-    var licenciasActivas = mutableStateOf(0)
+    private val _state = MutableStateFlow(DashboardState())
+    val state = _state.asStateFlow()
 
-    fun load(clienteId: String) {
+    fun loadDashboard() {
 
         viewModelScope.launch {
-            negocios.value = repo.getNegociosCount(clienteId)
-            locales.value = repo.getLocalesCount(clienteId)
-            usuarios.value = repo.getUsuariosCount(clienteId)
-            licenciasActivas.value = repo.getLicenciasActivasCount(clienteId)
+
+            try {
+
+                _state.value = _state.value.copy(loading = true)
+
+                val negocios = repo.getNegociosCount()
+                val locales = repo.getLocalesCount()
+                val usuarios = repo.getUsuariosCount()
+                val licencias = repo.getLicenciasActivasCount()
+
+                _state.value = DashboardState(
+                    negocios = negocios,
+                    locales = locales,
+                    usuarios = usuarios,
+                    licenciasActivas = licencias,
+                    loading = false
+                )
+
+            } catch (e: Exception) {
+
+                _state.value = _state.value.copy(
+                    loading = false,
+                    error = e.message
+                )
+            }
         }
     }
 }

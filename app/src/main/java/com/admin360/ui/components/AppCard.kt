@@ -10,31 +10,17 @@ import com.admin360.ui.theme.Dimens
 
 @Composable
 fun AppCard(
-
     modifier: Modifier = Modifier,
-
     content: @Composable () -> Unit
-
-){
-
+) {
     Card(
-
         modifier = modifier,
-
         elevation = CardDefaults.cardElevation(4.dp)
-
-    ){
-
+    ) {
         Column(
-
-            Modifier.padding(Dimens.CardPadding)
-
-        ){
-
+            modifier = Modifier.padding(Dimens.CardPadding)
+        ) {
             content()
-
         }
-
     }
-
 }

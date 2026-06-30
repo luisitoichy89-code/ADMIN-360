@@ -6,34 +6,21 @@ import kotlinx.coroutines.flow.asStateFlow
 
 abstract class BaseViewModel : ViewModel() {
 
-    protected val _loading =
-        MutableStateFlow(false)
+    protected val _loading = MutableStateFlow(false)
+    val loading = _loading.asStateFlow()
 
-    val loading =
-        _loading.asStateFlow()
-
-    protected val _message =
-        MutableStateFlow<String?>(null)
-
-    val message =
-        _message.asStateFlow()
+    protected val _message = MutableStateFlow<String?>(null)
+    val message = _message.asStateFlow()
 
     fun showLoading() {
-
         _loading.value = true
-
     }
 
     fun hideLoading() {
-
         _loading.value = false
-
     }
 
     fun sendMessage(text: String) {
-
         _message.value = text
-
     }
-
 }

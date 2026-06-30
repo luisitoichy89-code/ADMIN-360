@@ -31,10 +31,6 @@ object SessionManager {
         _session.asStateFlow()
 
     fun login(data: SessionData) {
-        // 🔐 VALIDACIÓN DE LICENCIA ANTES DE PERMITIR LOGIN
-        if (!LicenseGate.isLicenseValid(data.negocioId)) {
-            throw Exception("LICENCIA BLOQUEADA")
-        }
         _session.value = data
     }
 

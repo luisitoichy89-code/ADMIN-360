@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AppLicenseGate(
-    supabase: io.github.jan.supabase.SupabaseClient,
     navController: NavHostController,
     content: @Composable () -> Unit
 ) {
@@ -20,7 +19,7 @@ fun AppLicenseGate(
 
         scope.launch {
 
-            val ok = LicenseGuard.validateOrBlock(supabase)
+            val ok = LicenseGuard.validateOrBlock()
 
             if (!ok) {
                 navController.navigate("blocked") {
