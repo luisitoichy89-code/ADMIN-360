@@ -7,7 +7,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import org.luisito.admin360.ui.theme.Admin360Theme
+import org.luisito.admin360.ui.theme.Gestor360Theme
 import org.luisito.admin360.ui.screens.*
 import org.luisito.admin360.session.SessionManager
 
@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-            Admin360Theme {
+            Gestor360Theme {
 
                 val navController = rememberNavController()
                 val sessionManager: SessionManager = viewModel()

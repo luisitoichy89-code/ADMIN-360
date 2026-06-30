@@ -9,7 +9,7 @@ import com.admin360.core.security.SecurityManager
 import com.admin360.core.session.SessionManager
 import com.admin360.ui.navigation.AppNavHost
 import com.admin360.ui.screens.SplashGate
-import com.admin360.ui.theme.Admin360Theme
+import com.admin360.ui.theme.Gestor360Theme
 
 class MainActivity : ComponentActivity() {
 
@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-            Admin360Theme {
+            Gestor360Theme {
 
                 val navController = rememberNavController()
 
@@ -26,13 +26,8 @@ class MainActivity : ComponentActivity() {
 
                 var isReady by remember { mutableStateOf(false) }
 
-                /**
-                 * SPLASH GATE:
-                 * Decide si la app puede entrar o no
-                 */
                 LaunchedEffect(session.logged) {
 
-                    // Simula inicialización (Supabase, cache, etc)
                     if (!isReady) {
 
                         kotlinx.coroutines.delay(600)
@@ -43,14 +38,12 @@ class MainActivity : ComponentActivity() {
 
                 when {
 
-                    // 1. Splash inicial
                     !isReady -> {
 
                         SplashGate()
 
                     }
 
-                    // 2. Bloqueo por seguridad
                     isReady && !SecurityManager.canLogin() -> {
 
                         SplashGate(
@@ -59,7 +52,6 @@ class MainActivity : ComponentActivity() {
 
                     }
 
-                    // 3. App normal
                     else -> {
 
                         AppNavHost(
@@ -73,9 +65,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /**
-     * Decide a dónde entra el usuario según sesión
-     */
     private fun resolveStartDestination(): String {
 
         val session = SessionManager.session.value
