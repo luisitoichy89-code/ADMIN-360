@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
-    <style name="Theme.Gestor360Admin" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.Gestor360Admin" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
         <item name="colorPrimary">#4285F4</item>
+        <item name="colorPrimaryVariant">#3367D6</item>
         <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="colorSecondary">#5E97F6</item>
+
+        <item name="colorSecondary">#4285F4</item>
         <item name="colorOnSecondary">#FFFFFF</item>
+
         <item name="android:colorBackground">#E8F0FE</item>
-        <item name="colorSurface">#FFFFFF</item>
-        <item name="colorOnSurface">#1F1F1F</item>
-        <item name="android:statusBarColor" tools:targetApi="l">#4285F4</item>
-        <item name="android:navigationBarColor">#E8F0FE</item>
-        <item name="android:windowBackground">#E8F0FE</item>
+        <item name="colorBackground">#E8F0FE</item>
+
+        <item name="android:statusBarColor">#3367D6</item>
+
+        <item name="material3DynamicColor">false</item>
+
     </style>
 
 </resources>
