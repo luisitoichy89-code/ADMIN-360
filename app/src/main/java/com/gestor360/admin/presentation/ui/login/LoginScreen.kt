@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.gestor360.admin.presentation.ui.login.LoginViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -37,7 +36,7 @@ fun LoginScreen(
                 title = { Text("Gestor360 ADMIN") },
                 navigationIcon = {
                     Icon(
-                        imageVector = Icons.Default.AdminPanelSettings,
+                        imageVector = Icons.Filled.AdminPanelSettings,
                         contentDescription = null
                     )
                 }
@@ -102,15 +101,6 @@ fun LoginScreen(
                 } else {
                     Text("Ingresar")
                 }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            TextButton(
-                onClick = { /* soporte */ },
-                modifier = Modifier.align(Alignment.End)
-            ) {
-                Text("Soporte")
             }
         }
     }
