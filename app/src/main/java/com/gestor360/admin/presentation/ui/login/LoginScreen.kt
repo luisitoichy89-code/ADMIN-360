@@ -5,7 +5,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -78,10 +77,10 @@ fun LoginScreen(
                 visualTransformation = PasswordVisualTransformation()
             )
 
-            if (state.error != null) {
+            state.error?.let {
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = state.error!!,
+                    text = it,
                     color = MaterialTheme.colorScheme.error
                 )
             }
