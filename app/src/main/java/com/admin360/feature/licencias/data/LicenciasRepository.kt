@@ -10,9 +10,9 @@ class LicenciasRepository {
 
     suspend fun getByNegocio(negocioId: String): List<LicenciaDto> {
         return try {
-            client.select {
-                filter { eq("negocio_id", negocioId) }
-            }.decodeList()
+            client.select()
+                .decodeList<LicenciaDto>()
+                .filter { it.negocio_id == negocioId }
         } catch (e: Exception) {
             emptyList()
         }
@@ -51,19 +51,6 @@ class LicenciasRepository {
             true
         } catch (e: Exception) {
             false
-        }
-    }
-
-    suspend fun getActiveByNegocio(negocioId: String): LicenciaDto? {
-        return try {
-            client.select {
-                filter {
-                    eq("negocio_id", negocioId)
-                    eq("estado", "ACTIVA")
-                }
-            }.decodeSingleOrNull()
-        } catch (e: Exception) {
-            null
         }
     }
 }

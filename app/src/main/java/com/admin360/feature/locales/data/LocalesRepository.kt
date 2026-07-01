@@ -10,9 +10,9 @@ class LocalesRepository {
 
     suspend fun getByNegocio(negocioId: String): List<LocalDto> {
         return try {
-            client.select {
-                filter { eq("negocio_id", negocioId) }
-            }.decodeList()
+            client.select()
+                .decodeList<LocalDto>()
+                .filter { it.negocio_id == negocioId }
         } catch (e: Exception) {
             emptyList()
         }

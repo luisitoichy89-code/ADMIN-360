@@ -10,9 +10,9 @@ class UsuariosRepository {
 
     suspend fun getByNegocio(negocioId: String): List<UsuarioDto> {
         return try {
-            client.select {
-                filter { eq("negocio_id", negocioId) }
-            }.decodeList()
+            client.select()
+                .decodeList<UsuarioDto>()
+                .filter { it.negocio_id == negocioId }
         } catch (e: Exception) {
             emptyList()
         }
