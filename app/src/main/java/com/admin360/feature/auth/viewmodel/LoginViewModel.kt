@@ -1,58 +1,34 @@
 package com.admin360.feature.auth.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.admin360.core.auth.AuthRepository
-import com.admin360.core.session.SessionManager
-import com.admin360.core.session.SessionData
-import com.admin360.core.session.UserRole
-import com.admin360.core.supabase.SupabaseModule
+import com.admin360.core.auth.AuthService
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.mutableStateOf
 
-class LoginViewModel(
-    private val authRepo: AuthRepository
-) : ViewModel() {
+class LoginViewModel : ViewModel() {
 
-    var error = mutableStateOf<String?>(null)
+    var loading by mutableStateOf(false)
+    var error by mutableStateOf<String?>(null)
 
-    fun login(email: String, password: String, onSuccess: () -> Unit) {
+    private val auth = AuthService()
+
+    fun login(email: String, password: String, context: Context, onSuccess: () -> Unit) {
 
         viewModelScope.launch {
 
-            try {
+            loading = true
+            error = null
 
-                error.value = null
+            val result = auth.login(email, password, context)
 
-                // 1. Login en Supabase
-                authRepo.login(email, password)
+            loading = false
 
-                // 2. Obtener usuario autenticado
-                val user = SupabaseModule.client.auth.currentUserOrNull()
-
-                if (user == null) {
-                    error.value = "Usuario no encontrado"
-                    return@launch
-                }
-
-                // 3. Crear sesión (sin profile por ahora)
-                val session = SessionData(
-                    logged = true,
-                    usuarioId = user.id,
-                    negocioId = "",
-                    clienteId = "",
-                    email = email,
-                    rol = UserRole.SUPER_ADMIN,
-                    androidId = "",
-                    licenciaActiva = true
-                )
-
-                SessionManager.login(session)
-
+            if (result) {
                 onSuccess()
-
-            } catch (e: Exception) {
-                error.value = e.message ?: "Error de login"
+            } else {
+                error = "Error de login o licencia inválida"
             }
         }
     }

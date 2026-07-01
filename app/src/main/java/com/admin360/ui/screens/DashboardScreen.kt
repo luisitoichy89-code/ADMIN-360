@@ -1,29 +1,29 @@
 package com.admin360.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.admin360.feature.dashboard.viewmodel.DashboardViewModel
-import com.admin360.ui.components.KpiCard
+import com.admin360.feature.logs.viewmodel.LogsViewModel
+import com.admin360.ui.components.DashboardCard
 
 @Composable
 fun DashboardScreen(
-    onNavigate: (String) -> Unit,
-    viewModel: DashboardViewModel = viewModel()
+    onNavigate: (String) -> Unit = {},
+    dashboardVm: DashboardViewModel = viewModel(),
+    logsVm: LogsViewModel = viewModel()
 ) {
-
-    val state by viewModel.state.collectAsState()
+    val dashboardState = dashboardVm.state
+    val logsState = logsVm.state
 
     LaunchedEffect(Unit) {
-        viewModel.loadDashboard()
-    }
-
-    if (state.loading) {
-        CircularProgressIndicator()
-        return
+        dashboardVm.load()
+        logsVm.load()
     }
 
     Column(
@@ -31,66 +31,60 @@ fun DashboardScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-
         Text(
             text = "Dashboard",
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineLarge
         )
 
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(16.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            KpiCard("Negocios", state.negocios.toString())
-            KpiCard("Locales", state.locales.toString())
+        if (dashboardVm.loading) {
+            CircularProgressIndicator()
+            return@Column
         }
 
-        Spacer(Modifier.height(12.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            KpiCard("Usuarios", state.usuarios.toString())
-            KpiCard("Licencias", state.licenciasActivas.toString())
-        }
-
-        Spacer(Modifier.height(20.dp))
-
-        Button(
-            onClick = { onNavigate("negocios") },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Gestionar negocios")
+        Row {
+            DashboardCard("Negocios", dashboardState.totalNegocios)
+            DashboardCard("Locales", dashboardState.totalLocales)
         }
 
         Spacer(Modifier.height(8.dp))
 
-        Button(
-            onClick = { onNavigate("locales") },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Gestionar locales")
+        Row {
+            DashboardCard("Usuarios", dashboardState.totalUsuarios)
+            DashboardCard("Licencias OK", dashboardState.licenciasActivas)
         }
 
         Spacer(Modifier.height(8.dp))
 
-        Button(
-            onClick = { onNavigate("usuarios") },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Gestionar usuarios")
-        }
+        DashboardCard("Licencias Vencidas", dashboardState.licenciasVencidas, modifier = Modifier.fillMaxWidth())
+
+        Spacer(Modifier.height(16.dp))
+
+        Text(
+            text = "Actividad Reciente",
+            style = MaterialTheme.typography.titleMedium
+        )
 
         Spacer(Modifier.height(8.dp))
 
-        Button(
-            onClick = { onNavigate("licencias") },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Gestionar licencias")
+        if (logsVm.loading) {
+            CircularProgressIndicator()
+        }
+
+        LazyColumn {
+            items(logsState.logs) { log ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                ) {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        Text(log.accion)
+                        Text(log.created_at, style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+            }
         }
     }
 }

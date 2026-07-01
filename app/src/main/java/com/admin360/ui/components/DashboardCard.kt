@@ -10,40 +10,20 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun DashboardCard(
-
     title: String,
-
-    subtitle: String,
-
-    onClick: () -> Unit
-
+    value: Int,
+    modifier: Modifier = Modifier
 ) {
-
     Card(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier
+            .padding(8.dp)
+            .weight(1f)
     ) {
-
         Column(
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier.padding(16.dp)
         ) {
-
-            Text(
-                title,
-                style = MaterialTheme.typography.titleMedium
-            )
-
-            Spacer(
-                Modifier.height(8.dp)
-            )
-
-            Text(
-                subtitle,
-                style = MaterialTheme.typography.bodyMedium
-            )
-
+            Text(title, style = MaterialTheme.typography.titleMedium)
+            Text(value.toString(), style = MaterialTheme.typography.headlineMedium)
         }
-
     }
-
 }

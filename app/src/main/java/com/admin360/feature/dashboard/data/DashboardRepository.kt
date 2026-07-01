@@ -1,55 +1,35 @@
 package com.admin360.feature.dashboard.data
 
-import com.admin360.core.session.SessionManager
 import com.admin360.core.supabase.SupabaseModule
+import com.admin360.feature.dashboard.model.DashboardDto
 import io.github.jan.supabase.postgrest.from
 
 class DashboardRepository {
 
-    suspend fun getNegociosCount(): Int {
-        val clienteId = SessionManager.clienteId
-        return SupabaseModule.client
-            .from("negocios")
-            .select {
-                filter { eq("cliente_id", clienteId) }
-            }
-            .decodeList<Any>()
-            .size
-    }
+    private val db = SupabaseModule.client
 
-    suspend fun getLocalesCount(): Int {
-        val clienteId = SessionManager.clienteId
-        return SupabaseModule.client
-            .from("locales")
-            .select {
-                filter { eq("cliente_id", clienteId) }
-            }
-            .decodeList<Any>()
-            .size
-    }
+    suspend fun getDashboard(): DashboardDto {
 
-    suspend fun getUsuariosCount(): Int {
-        val clienteId = SessionManager.clienteId
-        return SupabaseModule.client
-            .from("usuarios")
-            .select {
-                filter { eq("cliente_id", clienteId) }
-            }
-            .decodeList<Any>()
-            .size
-    }
+        val negocios = db.from("negocios").select().decodeList<Any>().size
+        val locales = db.from("locales").select().decodeList<Any>().size
+        val usuarios = db.from("usuarios").select().decodeList<Any>().size
 
-    suspend fun getLicenciasActivasCount(): Int {
-        val clienteId = SessionManager.clienteId
-        return SupabaseModule.client
-            .from("licencias")
+        val licActivas = db.from("licencias")
             .select {
-                filter {
-                    eq("cliente_id", clienteId)
-                    eq("estado", "ACTIVA")
-                }
-            }
-            .decodeList<Any>()
-            .size
+                filter { eq("estado", "ACTIVA") }
+            }.decodeList<Any>().size
+
+        val licVencidas = db.from("licencias")
+            .select {
+                filter { eq("estado", "VENCIDA") }
+            }.decodeList<Any>().size
+
+        return DashboardDto(
+            totalNegocios = negocios,
+            totalLocales = locales,
+            totalUsuarios = usuarios,
+            licenciasActivas = licActivas,
+            licenciasVencidas = licVencidas
+        )
     }
 }

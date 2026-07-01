@@ -1,48 +1,26 @@
 package com.admin360.feature.dashboard.viewmodel
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.admin360.core.base.BaseViewModel
 import com.admin360.feature.dashboard.data.DashboardRepository
-import com.admin360.feature.dashboard.model.DashboardState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.admin360.feature.dashboard.model.DashboardDto
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.mutableStateOf
 
-class DashboardViewModel(
-    private val repo: DashboardRepository
-) : BaseViewModel() {
+class DashboardViewModel : ViewModel() {
 
-    private val _state = MutableStateFlow(DashboardState())
-    val state = _state.asStateFlow()
+    private val repo = DashboardRepository()
 
-    fun loadDashboard() {
+    var state by mutableStateOf(DashboardDto(0, 0, 0, 0, 0))
+        private set
 
+    var loading by mutableStateOf(false)
+
+    fun load() {
         viewModelScope.launch {
-
-            try {
-
-                _state.value = _state.value.copy(loading = true)
-
-                val negocios = repo.getNegociosCount()
-                val locales = repo.getLocalesCount()
-                val usuarios = repo.getUsuariosCount()
-                val licencias = repo.getLicenciasActivasCount()
-
-                _state.value = DashboardState(
-                    negocios = negocios,
-                    locales = locales,
-                    usuarios = usuarios,
-                    licenciasActivas = licencias,
-                    loading = false
-                )
-
-            } catch (e: Exception) {
-
-                _state.value = _state.value.copy(
-                    loading = false,
-                    error = e.message
-                )
-            }
+            loading = true
+            state = repo.getDashboard()
+            loading = false
         }
     }
 }
