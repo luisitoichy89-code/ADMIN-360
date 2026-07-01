@@ -18,6 +18,36 @@ android {
         buildConfigField("String", "SUPABASE_KEY", "\"${System.getenv("SUPABASE_KEY") ?: "sb_publishable_CGLNTn602vd77fEsR7yUYg_3f7eeQVu"}\"")
     }
 
+    flavorDimensions += "version"
+
+    productFlavors {
+        create("admin") {
+            dimension = "version"
+            applicationId = "com.gestor360.admin"
+            versionName = "1.0-admin"
+        }
+
+        create("client") {
+            dimension = "version"
+            applicationId = "com.gestor360.client"
+            versionName = "1.0-client"
+        }
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+        debug {
+            isMinifyEnabled = false
+        }
+    }
+
     buildFeatures {
         compose = true
         buildConfig = true
@@ -28,8 +58,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
 
     composeOptions {
@@ -44,4 +76,5 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 }
