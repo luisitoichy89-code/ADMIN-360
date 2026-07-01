@@ -27,7 +27,7 @@ jobs:
       run: ./gradlew assembleAdminRelease
 
     - name: Upload APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: admin-apk
         path: app/build/outputs/apk/admin/release/*.apk
