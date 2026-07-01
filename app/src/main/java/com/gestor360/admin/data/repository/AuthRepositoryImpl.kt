@@ -2,39 +2,42 @@ package com.gestor360.admin.data.repository
 
 import com.gestor360.admin.domain.models.Usuario
 import com.gestor360.admin.domain.repository.AuthRepository
-import io.github.jan.supabase.gotrue.Auth
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.builtin.Email
-import io.github.jan.supabase.gotrue.user.UserInfo
 
 class AuthRepositoryImpl(
-    private val supabase: Auth
+    private val supabase: SupabaseClient
 ) : AuthRepository {
 
     override suspend fun login(
         username: String,
         password: String
     ): Result<Usuario> {
+
         return try {
 
-            val result = supabase.signInWith(Email) {
+            supabase.auth.signInWith(Email) {
                 this.email = username
                 this.password = password
             }
 
-            val userInfo: UserInfo? = supabase.currentUserOrNull()
+            val session = supabase.auth.currentSessionOrNull()
+                ?: throw Exception("Sesión no encontrada")
 
-            val usuario = userInfo?.let {
-                Usuario(
-                    id = it.id,
-                    username = username,
-                    nombre = it.email ?: "",
-                    rol = "admin",
-                    clienteId = "",
-                    almacenId = "",
-                    activo = true,
-                    androidId = ""
-                )
-            } ?: throw Exception("Usuario no encontrado")
+            val user = supabase.auth.currentUserOrNull()
+                ?: throw Exception("Usuario no encontrado")
+
+            val usuario = Usuario(
+                id = user.id,
+                username = username,
+                nombre = user.email ?: "",
+                rol = "admin",
+                clienteId = "",
+                almacenId = "",
+                activo = true,
+                androidId = ""
+            )
 
             Result.success(usuario)
 
